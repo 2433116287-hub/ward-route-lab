@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ward Route Lab</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: clamp(20px, 5vw, 64px); background: #e8f0ee; color: #102925; font: 16px system-ui, sans-serif; }
+    main { max-width: 1120px; margin: auto; }
+    h1 { margin: 0; font-size: clamp(36px, 7vw, 64px); letter-spacing: -.06em; line-height: 1; }
+    h2 { margin: 0 0 14px; font-size: 17px; }
+    p { line-height: 1.5; }
+    header p { margin: 12px 0 28px; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 265px; align-items: start; gap: 18px; }
+    section { background: #fff; border: 1px solid #c5d8d3; border-radius: 18px; padding: 18px; }
+    canvas { display: block; width: 100%; height: auto; background: #f1f6f4; border-radius: 10px; }
+    label { display: grid; gap: 5px; margin: 0 0 12px; font-size: 14px; font-weight: 650; }
+    input, select, button { font: inherit; color: inherit; border: 1px solid #96b5ad; border-radius: 8px; padding: 8px; width: 100%; background: #fff; }
+    button { cursor: pointer; margin-top: 7px; font-weight: 700; }
+    button.primary { background: #006a58; color: #fff; border-color: #006a58; }
+    button:disabled { opacity: .55; cursor: default; }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 15px; margin-top: 12px; font-size: 13px; }
+    .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; background: var(--swatch); margin-right: 4px; }
+    #status { min-height: 24px; margin-bottom: 4px; font-weight: 650; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+    th, td { border-bottom: 1px solid #d9e6e2; padding: 8px 4px; }
+    .hint { font-size: 13px; color: #35554e; margin-bottom: 0; }
+    @media (max-width: 720px) { .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Ward Route Lab</h1>
+    <p>Plan a supply delivery through a simulated hospital ward.</p>
+  </header>
+  <div class="layout">
+    <section aria-labelledby="map-title">
+      <h2 id="map-title">Ward and route</h2>
+      <canvas id="map" width="748" height="484" role="img" aria-label="Ward map showing walls, carts, the route and robot position"></canvas>
+      <div class="legend" aria-label="Map legend">
+        <span><i style="--swatch:#284842"></i>Wall</span>
+        <span><i style="--swatch:#ae5119"></i>Cart</span>
+        <span><i style="--swatch:#cce7e0"></i>Explored</span>
+        <span><i style="--swatch:#008b72"></i>Route</span>
+        <span><i style="--swatch:#6153aa"></i>Robot</span>
+      </div>
+      <p id="status" role="status"></p>
+      <table aria-label="Planner comparison">
+        <thead><tr><th>Planner</th><th>Moves</th><th>Cells expanded</th></tr></thead>
+        <tbody id="metrics"></tbody>
+      </table>
+      <p class="hint">Expanded cells are counted per leg. A cell explored on both legs counts twice.</p>
+    </section>
+    <section aria-labelledby="controls-title">
+      <h2 id="controls-title">Mission settings</h2>
+      <label>Scenario
+        <select id="scenario">
+          <option value="clear">Clear corridor</option>
+          <option value="busy" selected>Parked carts</option>
+          <option value="sealed">Closed ward doors</option>
+        </select>
+      </label>
+      <label>Layout seed <input id="seed" type="number" min="0" max="4294967295" step="1" value="42"></label>
+      <label>Destination
+        <select id="room"><option>A</option><option>B</option><option selected>C</option></select>
+      </label>
+      <label>Planner to replay
+        <select id="algorithm"><option value="astar">A*</option><option value="bfs">Breadth-first search</option></select>
+      </label>
+      <button id="plan" class="primary" type="button">Plan mission</button>
+      <button id="replay" type="button">Replay route</button>
+      <button id="export" type="button">Download run JSON</button>
+    </section>
+  </div>
+</main>
+<script src="planner.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
